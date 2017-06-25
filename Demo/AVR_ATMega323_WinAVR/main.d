@@ -7,4 +7,4 @@ main.o main.d : main.c ../../Source/include/FreeRTOS.h FreeRTOSConfig.h \
   ../Common/include/PollQ.h ../Common/include/integer.h \
   ../Common/include/serial.h ../Common/include/comtest.h \
   ../Common/include/crflash.h ../Common/include/print.h \
-  ../Common/include/partest.h regtest.h
+  ../Common/include/partest.h regtest.h ../Common/include/adc_basic.h

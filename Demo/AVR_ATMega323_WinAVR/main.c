@@ -139,6 +139,8 @@ Changes from V4.0.5
 #include "print.h"
 #include "partest.h"
 #include "regtest.h"
+#include "adc_basic.h"
+#include "stdio.h"
 
 /* Priority definitions for most of the tasks in the demo application.  Some
 tasks just use the idle priority. */
@@ -202,16 +204,22 @@ void print(char *str,uint16_t len)
 		xSerialPutChar( 0, str[i], 0 );
 }
 
-void TaskPrint(void *pvParameters);
-void TaskPrint(void *pvParameters)  // This is a task.
+void DisplayTemp(void *pvParameters);
+void DisplayTemp(void *pvParameters)  // This is a task.
 {
-  (void) pvParameters;
+	static int res;
+	static char MsgBuff[32];
+	(void) pvParameters;
 
-  for(;;)
-  {
-	vTaskDelay(500);              // wait for a second
-	print("Hello World\r\n",strlen("Hello World\r\n"));
-  }
+	ADC_0_init();
+	xSerialPortInitMinimal( mainCOM_TEST_BAUD_RATE, 100 );
+	for(;;)
+	{
+		vTaskDelay(500);              // wait for a second
+		res = ADC_0_get_conversion(0);
+		sprintf(MsgBuff,"Temperature = %d *C\r\n",res/2);
+		print(MsgBuff,strlen(MsgBuff));
+	}
 
 }
 short main( void )
@@ -220,11 +228,8 @@ short main( void )
 
 	/* Setup the LED's for output. */
 	vParTestInitialise();
-	
-	xSerialPortInitMinimal( mainCOM_TEST_BAUD_RATE, 100 );
 
-
-	xTaskCreate( TaskPrint, "Print", configMINIMAL_STACK_SIZE, NULL, mainCOM_TEST_PRIORITY, NULL );
+	xTaskCreate( DisplayTemp, "Display", configMINIMAL_STACK_SIZE, NULL, mainCOM_TEST_PRIORITY, NULL );
 	
 	
 	/* Create the co-routines that flash the LED's. */

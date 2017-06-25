@@ -53,6 +53,7 @@ SRC	= \
 main.c \
 ParTest/ParTest.c \
 serial/serial.c \
+analog/adc_basic.c \
 regtest.c \
 $(SOURCE_DIR)/tasks.c \
 $(SOURCE_DIR)/queue.c \
